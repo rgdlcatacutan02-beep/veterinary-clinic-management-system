@@ -49,11 +49,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
       return [
         { id: 'owner-dashboard', label: 'Dashboard', icon: LayoutDashboard },
         { id: 'owner-pets', label: 'My Registered Pets', icon: Users },
+        { id: 'owner-appointments', label: 'Book Appointments', icon: Calendar },
         { id: 'owner-history', label: 'Medical Timeline', icon: Activity },
         { id: 'owner-prescriptions', label: 'Prescriptions (RX)', icon: FileSpreadsheet },
         { id: 'owner-vaccinations', label: 'Booster Certs', icon: Shield },
-        { id: 'owner-appointments', label: 'Book Appointments', icon: Calendar },
-        { id: 'owner-billing', label: 'Billing & Receipts', icon: DollarSign }
+        { id: 'owner-billing', label: 'Billing & Receipts', icon: DollarSign },
+        { id: 'owner-advisor', label: 'AI Health Advisor', icon: HeartPulse }
       ];
     }
 
