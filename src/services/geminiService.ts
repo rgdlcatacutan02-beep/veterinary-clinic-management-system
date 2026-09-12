@@ -13,13 +13,6 @@ export interface AISoapSuggestion {
   preventativeCare: string;
 }
 
-export interface AIPetAdvice {
-  assessment: string;
-  recommendations: string[];
-  urgency: 'Low' | 'Moderate' | 'High - Seek Immediate Vet Care';
-  disclaimer: string;
-}
-
 const getApiKey = (): string | undefined => {
   // Check Vite environment variable or localStorage user override
   try {
@@ -140,93 +133,4 @@ Return your response strictly as valid JSON with this exact shape:
   }
 };
 
-/**
- * Generate Pet Owner Health & Symptom Advice
- */
-export const generatePetOwnerAdvice = async (params: {
-  petName: string;
-  species: string;
-  symptoms: string;
-}): Promise<AIPetAdvice> => {
-  const lower = params.symptoms.toLowerCase();
-  const isEmergency =
-    lower.includes('collapse') ||
-    lower.includes('poison') ||
-    lower.includes('chocolate') ||
-    lower.includes('bleed') ||
-    lower.includes('breath') ||
-    lower.includes('seizure') ||
-    lower.includes('unconscious');
 
-  const apiKey = getApiKey();
-
-  if (!apiKey) {
-    if (isEmergency) {
-      return {
-        assessment: `Potential Acute Veterinary Emergency identified for ${params.petName}.`,
-        recommendations: [
-          'Contact your nearest 24/7 Emergency Animal Hospital immediately.',
-          'Keep the pet calm, warm, and transport in a secure carrier or blanket.',
-          'Do not administer human medications (such as Tylenol or Ibuprofen), as they are toxic to animals.'
-        ],
-        urgency: 'High - Seek Immediate Vet Care',
-        disclaimer: 'This automated triage is an assistive guide and does not replace emergency in-person veterinary medical examination.'
-      };
-    }
-
-    return {
-      assessment: `Preliminary wellness analysis for ${params.petName} (${params.species}): Symptoms indicate mild discomfort that should be monitored closely.`,
-      recommendations: [
-        'Ensure continuous access to fresh, clean drinking water.',
-        'Monitor eating habits, bathroom output, and energy level over the next 12-24 hours.',
-        'Schedule a non-emergency consultation with your veterinarian if symptoms persist or worsen.',
-        'Do not give over-the-counter human pain relievers without explicit veterinary direction.'
-      ],
-      urgency: 'Moderate',
-      disclaimer: 'Always consult your licensed veterinarian for definitive medical diagnosis and treatment prescriptions.'
-    };
-  }
-
-  try {
-    const ai = new GoogleGenAI({ apiKey });
-    const prompt = `You are an AI Pet Health Assistant. A pet owner is asking about their pet:
-- Pet Name: ${params.petName}
-- Species: ${params.species}
-- Symptoms described: ${params.symptoms}
-
-Provide helpful, clear, preliminary triage guidance for the owner.
-Return strictly valid JSON with this shape:
-{
-  "assessment": "Brief overview assessment",
-  "recommendations": ["Recommendation 1", "Recommendation 2", "Recommendation 3"],
-  "urgency": "Low" | "Moderate" | "High - Seek Immediate Vet Care",
-  "disclaimer": "Standard veterinary disclaimer"
-}`;
-
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
-      config: {
-        responseMimeType: 'application/json'
-      }
-    });
-
-    const text = response.text?.trim();
-    if (text) {
-      return JSON.parse(text) as AIPetAdvice;
-    }
-  } catch (err) {
-    console.warn('Gemini API call failed, falling back to heuristic advice:', err);
-  }
-
-  return {
-    assessment: `Analysis for ${params.petName}: Observations noted.`,
-    recommendations: [
-      'Ensure access to clean water and a comfortable resting area.',
-      'Log timing and frequency of symptoms to share with your vet.',
-      'Book a clinic visit through your portal if symptoms do not resolve promptly.'
-    ],
-    urgency: 'Moderate',
-    disclaimer: 'This advisory tool is for informational support only.'
-  };
-};

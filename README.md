@@ -28,7 +28,7 @@ The application comes pre-loaded with comprehensive clinical data. Use the **1-C
 | **Admin** | Dr. Sarah Jenkins | `Admin` | `admin1234` | Full clinical access, staff roster, financial reports, audit logs |
 | **Veterinarian** | Dr. Robert Taylor | `dr.taylor` | `staff1234` | Patient charting, AI SOAP consults, surgeries, prescriptions, labs |
 | **Receptionist** | Emily Clark | `emily.clark` | `staff1234` | Front desk scheduler, patient check-in/out, invoices & payments |
-| **Pet Owner** | John Doe | `john.doe` | `client1234` | Pet wellness timeline, vaccine certs, visit booking, AI advisor |
+| **Pet Owner** | John Doe | `john.doe` | `client1234` | Pet wellness timeline, vaccine certs, visit booking, billing |
 
 > 💡 **Tip**: Click **"Reset Demo"** in the header or login screen anytime to restore the complete sample database.
 
@@ -55,9 +55,9 @@ The application comes pre-loaded with comprehensive clinical data. Use the **1-C
 ### 🐾 Self-Service Pet Owner Portal
 - **Family Pets Registry**: Detailed animal profiles, breed details, allergy notices, and biometric weight progression graphs.
 - **Medical History & Vaccine Certificates**: Owners can view released clinical summaries and print vaccination certificates.
+- **Prescriptions & Medications**: Dedicated tracker for active/completed medications with dosage instructions and printable Rx slips.
 - **Online Visit Booking**: Pet owners can request consultation, booster, or grooming appointments directly.
 - **Digital Invoicing & Payments**: Transparent invoice inspection with instant online card settlement simulation.
-- **AI Pet Health Advisor & Symptom Checker**: Instant preliminary triage guidance for pet owners with urgency scoring (Low, Moderate, High) and direct booking links.
 
 ---
 
@@ -192,7 +192,7 @@ veterinary-clinic-management-system/
 │   │   │   ├── ReportsView.tsx        # Financial analytics & real CSV export
 │   │   │   └── AuditLogsView.tsx      # Immutable security ledger & CSV export
 │   │   └── portal/
-│   │       └── PetOwnerPortal.tsx     # Client portal with AI Pet Health Advisor
+│   │       └── PetOwnerPortal.tsx     # Client portal with pets, appointments, Rx & billing
 │   ├── types.ts                   # Domain entity TypeScript declarations
 │   ├── App.tsx                    # Root routing & layout orchestrator
 │   ├── index.css                  # Tailwind CSS v4 design tokens & fonts

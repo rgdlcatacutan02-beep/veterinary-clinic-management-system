@@ -11,7 +11,6 @@ import {
   Receipt,
   FileCheck,
   PlusCircle,
-  Sparkles,
   Printer,
   ArrowRight,
   LayoutDashboard,
@@ -22,7 +21,6 @@ import {
   Clock,
   CheckCircle2,
   AlertTriangle,
-  Loader2,
   ShieldCheck,
   Filter,
   DollarSign,
@@ -31,7 +29,6 @@ import {
   Info
 } from 'lucide-react';
 import { AppointmentType } from '../../types';
-import { generatePetOwnerAdvice, AIPetAdvice } from '../../services/geminiService';
 
 export interface PetOwnerPortalProps {
   currentTab?: string;
@@ -45,8 +42,7 @@ export type OwnerTabKey =
   | 'owner-history'
   | 'owner-prescriptions'
   | 'owner-vaccinations'
-  | 'owner-billing'
-  | 'owner-advisor';
+  | 'owner-billing';
 
 export const PetOwnerPortal: React.FC<PetOwnerPortalProps> = ({ currentTab, onTabChange }) => {
   const {
@@ -75,12 +71,6 @@ export const PetOwnerPortal: React.FC<PetOwnerPortalProps> = ({ currentTab, onTa
 
   // Payment feedback
   const [paymentNotice, setPaymentNotice] = useState<string | null>(null);
-
-  // AI Pet Health Advisor state
-  const [advisorPetId, setAdvisorPetId] = useState('');
-  const [advisorSymptoms, setAdvisorSymptoms] = useState('');
-  const [isConsultingAi, setIsConsultingAi] = useState(false);
-  const [aiAdvice, setAiAdvice] = useState<AIPetAdvice | null>(null);
 
   // Active tab synchronized with App.tsx & Sidebar
   const activeTab: OwnerTabKey = (currentTab as OwnerTabKey) || 'owner-dashboard';
@@ -157,29 +147,6 @@ export const PetOwnerPortal: React.FC<PetOwnerPortalProps> = ({ currentTab, onTa
     setTimeout(() => setPaymentNotice(null), 5000);
   };
 
-  const handleAskAiAdvisor = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!advisorSymptoms.trim()) return;
-
-    const petObj = myPetsList.find(p => p.id === advisorPetId) || myPetsList[0];
-    const petName = petObj ? petObj.name : 'Your Pet';
-    const petSpecies = petObj ? petObj.species : 'Pet';
-
-    setIsConsultingAi(true);
-    try {
-      const advice = await generatePetOwnerAdvice({
-        petName,
-        species: petSpecies,
-        symptoms: advisorSymptoms
-      });
-      setAiAdvice(advice);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsConsultingAi(false);
-    }
-  };
-
   const tabsConfig = [
     { key: 'owner-dashboard', title: 'Dashboard', icon: LayoutDashboard },
     { key: 'owner-pets', title: 'My Registered Pets', icon: Heart },
@@ -187,8 +154,7 @@ export const PetOwnerPortal: React.FC<PetOwnerPortalProps> = ({ currentTab, onTa
     { key: 'owner-history', title: 'Medical Timeline', icon: Activity },
     { key: 'owner-prescriptions', title: 'Prescriptions (RX)', icon: FileSpreadsheet },
     { key: 'owner-vaccinations', title: 'Booster Certs', icon: Shield },
-    { key: 'owner-billing', title: 'Bills & Receipts', icon: Receipt },
-    { key: 'owner-advisor', title: 'AI Pet Health Advisor', icon: Sparkles }
+    { key: 'owner-billing', title: 'Bills & Payments', icon: Receipt }
   ];
 
   return (
@@ -217,13 +183,6 @@ export const PetOwnerPortal: React.FC<PetOwnerPortalProps> = ({ currentTab, onTa
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <button
-              onClick={() => switchTab('owner-advisor')}
-              className="flex items-center gap-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3.5 py-2.5 text-xs font-bold text-white transition-colors cursor-pointer"
-            >
-              <Sparkles className="h-3.5 w-3.5 text-emerald-400" />
-              <span>AI Health Advisor</span>
-            </button>
             <button
               onClick={() => setShowBookModal(true)}
               className="flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-emerald-500 shadow-md shadow-emerald-500/20 transition-colors cursor-pointer"
@@ -442,7 +401,7 @@ export const PetOwnerPortal: React.FC<PetOwnerPortalProps> = ({ currentTab, onTa
               {/* Sidebar Quick Action Card */}
               <div className="space-y-4">
                 <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-emerald-600" />
+                  <ShieldCheck className="h-4 w-4 text-emerald-600" />
                   <span>Clinical Quick Actions</span>
                 </h3>
                 <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-xs space-y-3">
@@ -458,17 +417,6 @@ export const PetOwnerPortal: React.FC<PetOwnerPortalProps> = ({ currentTab, onTa
                   </button>
 
                   <button
-                    onClick={() => switchTab('owner-advisor')}
-                    className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 text-slate-800 hover:bg-slate-100 transition-colors text-left cursor-pointer"
-                  >
-                    <div>
-                      <strong className="block text-xs font-bold">AI Symptom Checker</strong>
-                      <span className="text-[10px] text-slate-500">Preliminary triage via Gemini AI</span>
-                    </div>
-                    <Sparkles className="h-4 w-4 text-purple-600" />
-                  </button>
-
-                  <button
                     onClick={() => switchTab('owner-history')}
                     className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 text-slate-800 hover:bg-slate-100 transition-colors text-left cursor-pointer"
                   >
@@ -477,6 +425,17 @@ export const PetOwnerPortal: React.FC<PetOwnerPortalProps> = ({ currentTab, onTa
                       <span className="text-[10px] text-slate-500">View released diagnosis records</span>
                     </div>
                     <Activity className="h-4 w-4 text-indigo-600" />
+                  </button>
+
+                  <button
+                    onClick={() => switchTab('owner-prescriptions')}
+                    className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 text-slate-800 hover:bg-slate-100 transition-colors text-left cursor-pointer"
+                  >
+                    <div>
+                      <strong className="block text-xs font-bold">Medications & Prescriptions</strong>
+                      <span className="text-[10px] text-slate-500">Check dosage instructions</span>
+                    </div>
+                    <Pill className="h-4 w-4 text-teal-600" />
                   </button>
 
                   {nextVaccineDue && (
@@ -998,166 +957,6 @@ export const PetOwnerPortal: React.FC<PetOwnerPortalProps> = ({ currentTab, onTa
           </div>
         )}
 
-        {/* 8. AI PET HEALTH ADVISOR */}
-        {activeTab === 'owner-advisor' && (
-          <div className="space-y-6">
-            <div className="rounded-2xl border border-slate-100 bg-white p-6 sm:p-7 shadow-xs space-y-5">
-              <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-                <div className="h-10 w-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                  <Sparkles className="h-5 w-5" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold text-slate-900">AI Pet Health Advisor & Symptom Checker</h3>
-                  <p className="text-xs text-slate-400">Powered by Gemini AI • Instant preliminary wellness guidance and clinical triage</p>
-                </div>
-              </div>
-
-              <form onSubmit={handleAskAiAdvisor} className="space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                      Select Patient Pet
-                    </label>
-                    <select
-                      value={advisorPetId}
-                      onChange={(e) => setAdvisorPetId(e.target.value)}
-                      className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs bg-white focus:border-emerald-500 focus:outline-none"
-                    >
-                      <option value="">-- All / General Pet Inquiry --</option>
-                      {myPetsList.map((pet) => (
-                        <option key={pet.id} value={pet.id}>
-                          {pet.name} ({pet.species} - {pet.breed})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                      Quick Symptom Examples
-                    </label>
-                    <div className="flex flex-wrap gap-1.5 pt-0.5">
-                      {[
-                        'Persistent ear scratching',
-                        'Mild loss of appetite',
-                        'Occasional coughing',
-                        'Stiffness after play'
-                      ].map((prompt) => (
-                        <button
-                          key={prompt}
-                          type="button"
-                          onClick={() => setAdvisorSymptoms(prompt)}
-                          className="rounded-lg bg-slate-50 border border-slate-200 px-2 py-1 text-[10px] text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200 transition-colors cursor-pointer"
-                        >
-                          {prompt}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                    Describe your pet's symptoms, behavior, or health question
-                  </label>
-                  <textarea
-                    required
-                    rows={3}
-                    value={advisorSymptoms}
-                    onChange={(e) => setAdvisorSymptoms(e.target.value)}
-                    placeholder="e.g. Buddy has been shaking his head and scratching his right ear since yesterday after swimming at the park..."
-                    className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-xs text-slate-800 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none"
-                  />
-                </div>
-
-                <div className="flex justify-end">
-                  <button
-                    type="submit"
-                    disabled={isConsultingAi || !advisorSymptoms.trim()}
-                    className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-emerald-600/20 hover:from-emerald-700 hover:to-teal-700 transition-all cursor-pointer disabled:opacity-40"
-                  >
-                    {isConsultingAi ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        <span>Analyzing Symptoms with Gemini...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles className="h-4 w-4" />
-                        <span>Analyze & Get Recommendations</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </form>
-
-              {aiAdvice && (
-                <div className="mt-6 rounded-2xl border border-emerald-100 bg-emerald-50/40 p-5 space-y-4 animate-in fade-in duration-300">
-                  <div className="flex items-center justify-between border-b border-emerald-100 pb-3">
-                    <span className="text-xs font-bold text-slate-800 flex items-center gap-2">
-                      <ShieldCheck className="h-4 w-4 text-emerald-600" />
-                      Preliminary Clinical Triage
-                    </span>
-                    <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        aiAdvice.urgency === 'Low'
-                          ? 'bg-emerald-100 text-emerald-800'
-                          : aiAdvice.urgency === 'Moderate'
-                          ? 'bg-amber-100 text-amber-800'
-                          : 'bg-rose-100 text-rose-800'
-                      }`}
-                    >
-                      Urgency Level: {aiAdvice.urgency}
-                    </span>
-                  </div>
-
-                  <div>
-                    <strong className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                      Assessment Overview
-                    </strong>
-                    <p className="text-xs text-slate-700 leading-relaxed font-medium">
-                      {aiAdvice.assessment}
-                    </p>
-                  </div>
-
-                  {aiAdvice.recommendations && aiAdvice.recommendations.length > 0 && (
-                    <div>
-                      <strong className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">
-                        Recommended Action Steps
-                      </strong>
-                      <ul className="space-y-1.5">
-                        {aiAdvice.recommendations.map((rec, i) => (
-                          <li key={i} className="flex items-start gap-2 text-xs text-slate-700">
-                            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                            <span>{rec}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-t border-emerald-100 pt-3">
-                    <p className="text-[10px] text-slate-400 italic">
-                      ⚠️ {aiAdvice.disclaimer}
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedPetId(advisorPetId || (myPetsList[0]?.id || ''));
-                        setBookNotes(`Symptoms reported to AI Advisor: ${advisorSymptoms}`);
-                        setShowBookModal(true);
-                      }}
-                      className="flex items-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-1.5 text-xs font-bold shadow-xs cursor-pointer shrink-0"
-                    >
-                      <span>Book Clinic Appointment</span>
-                      <ArrowRight className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
       </div>
 
       {/* PORTAL VISITS BOOKER MODAL */}
@@ -1232,7 +1031,7 @@ export const PetOwnerPortal: React.FC<PetOwnerPortalProps> = ({ currentTab, onTa
                   rows={2}
                   value={bookNotes}
                   onChange={(e) => setBookNotes(e.target.value)}
-                  placeholder="Need core vaccine boosters, general wellness checkup, or minor symptoms..."
+                  placeholder="Need core vaccine boosters, general wellness checkup, or checkup reason..."
                   className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs focus:outline-none"
                 />
               </div>

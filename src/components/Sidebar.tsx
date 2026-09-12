@@ -53,8 +53,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         { id: 'owner-history', label: 'Medical Timeline', icon: Activity },
         { id: 'owner-prescriptions', label: 'Prescriptions (RX)', icon: FileSpreadsheet },
         { id: 'owner-vaccinations', label: 'Booster Certs', icon: Shield },
-        { id: 'owner-billing', label: 'Billing & Receipts', icon: DollarSign },
-        { id: 'owner-advisor', label: 'AI Health Advisor', icon: HeartPulse }
+        { id: 'owner-billing', label: 'Billing & Receipts', icon: DollarSign }
       ];
     }
 

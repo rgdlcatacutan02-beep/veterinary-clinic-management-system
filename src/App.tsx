@@ -158,7 +158,6 @@ function AppContent() {
       case 'owner-vaccinations':
       case 'owner-appointments':
       case 'owner-billing':
-      case 'owner-advisor':
         return <PetOwnerPortal currentTab={currentTab} onTabChange={handleTabChange} />;
 
       default:
