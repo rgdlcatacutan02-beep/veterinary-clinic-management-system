@@ -1,0 +1,6 @@
+{
+  "name": "Veterinary Clinic Management System",
+  "description": "A comprehensive veterinary clinic management dashboard for administrators, veterinarians, and receptionists, coupled with a secure self-service portal for pet owners.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
