@@ -122,7 +122,7 @@ graph TD
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/veterinary-clinic-management-system.git
+   git clone https://github.com/rgdlcatacutan02-beep/veterinary-clinic-management-system.git
    cd veterinary-clinic-management-system
    ```
 
