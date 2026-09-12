@@ -6,6 +6,7 @@
 [![Vite](https://img.shields.io/badge/Vite-6.2-646cff.svg?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1-38bdf8.svg?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Google Gemini](https://img.shields.io/badge/Gemini_AI-2.5_Flash-8e75ff.svg?logo=google-gemini&logoColor=white)](https://ai.google.dev/)
+[![CI](https://github.com/rgdlcatacutan02-beep/veterinary-clinic-management-system/actions/workflows/ci.yml/badge.svg)](https://github.com/rgdlcatacutan02-beep/veterinary-clinic-management-system/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
 
 ---
